@@ -15,3 +15,4 @@ class Reports(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     resume_text = Column(Text)
     result = Column(Text)
+
