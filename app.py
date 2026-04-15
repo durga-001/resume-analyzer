@@ -5,9 +5,14 @@ import PyPDF2
 import docx
 import json
 
+# Import your helper function here
+# from ai_helper import analyze_resume 
+# ^ Uncomment and adjust the line above to match your actual AI file name
+
 app = Flask(__name__)
 app.secret_key = "secret123"
 
+# Create database tables
 Base.metadata.create_all(bind=engine)
 
 @app.route("/")
@@ -30,6 +35,7 @@ def signup():
         user = models.User(email=email, password=password)
         db.add(user)
         db.commit()
+        db.close() # Good practice to close the session
         return redirect("/login")
 
     return render_template("signup.html")
@@ -44,8 +50,10 @@ def login():
         user = db.query(models.User).filter_by(email=email, password=password).first()
         if user:
             session["user"] = user.email
+            db.close()
             return redirect("/dashboard")
         else:
+            db.close()
             return "Invalid credentials"
 
     return render_template("login.html")
@@ -86,29 +94,30 @@ def dashboard():
 
         if resume_text and user_goal:
             try:
-                # Make sure analyze_resume is imported from your helper file
+                # Ensure analyze_resume is defined or imported
                 result = analyze_resume(resume_text, user_goal)
 
                 db = SessionLocal()
                 user = db.query(models.User).filter_by(email=session["user"]).first()
 
-                report = models.Reports(   # class name is Reports in your models
+                report = models.Reports(
                     user_id=user.id,
                     resume_text=resume_text,
-                    result=json.dumps(result)  # column name is result, not results
+                    result=json.dumps(result)
                 )
 
                 db.add(report)
                 db.commit()
+                db.close()
 
             except Exception as e:
                 result = {"error": f"AI error: {str(e)}"}
 
-        return render_template(
-            "dashboard.html",
-            user=session["user"],
-            result=result
-        )
+    return render_template(
+        "dashboard.html",
+        user=session["user"],
+        result=result
+    )
 
 @app.route("/history")
 def history():
@@ -129,7 +138,7 @@ def history():
             "resume": r.resume_text,
             "result": parsed_result
         })
-
+    db.close()
     return render_template("history.html", reports=parsed_reports)
 
 @app.route("/logout")
