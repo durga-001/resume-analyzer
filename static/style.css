@@ -8,8 +8,8 @@ body {
 .auth-container {
   display: flex;
   justify-content: center;
-  align-items: denter;
-  margin-top: 60px;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .auth-card {
@@ -130,6 +130,16 @@ textarea {
   border: 1px solid #ddd;
   margin-top: 10px;
   font-size: 14px;
+}
+header {
+  background: #111827;
+  padding: 15px 0;
+}
+
+header::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 input[type="file"],
