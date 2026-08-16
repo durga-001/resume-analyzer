@@ -3,7 +3,6 @@ import json
 from openai import OpenAI
 
 # The OpenAI client reads OPENAI_API_KEY from the environment automatically.
-# Make sure you set it (see .env.example / README).
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 

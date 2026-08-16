@@ -1,18 +1,11 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "mysql+pymysql://2r9Vphs8fE5THdm.root:ffQh7zowN8PFVtdt@gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/test?ssl_mode=VERIFY_IDENTITY&ssl_ca=<CA_PATH>"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///resume_analyzer.db")
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    connect_args={
-        "ssl":{
-            "ssl":False
-        }
-    }
-)
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
-
-SessionLocal = sessionmaker(bind=engine)
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()

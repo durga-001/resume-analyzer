@@ -1,4 +1,10 @@
+"""
+Run this once to create the database tables:
+    python init_db.py
+"""
 from db import Base, engine
-from models import User, Reports  # make sure models are imported
+import models 
 
-Base.metadata.create_all(bind=engine)
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created.")
