@@ -2,7 +2,7 @@ import os
 import json
 
 from dotenv import load_dotenv
-load_dotenv()  # loads OPENAI_API_KEY / SECRET_KEY / DATABASE_URL from .env in local dev
+load_dotenv()  
 
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
